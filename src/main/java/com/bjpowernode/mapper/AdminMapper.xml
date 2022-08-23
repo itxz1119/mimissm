@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjpowernode.mapper.AdminMapper" >
+  <resultMap id="BaseResultMap" type="com.bjpowernode.pojo.Admin" >
+    <id column="a_id" property="aId" jdbcType="INTEGER" />
+    <result column="a_name" property="aName" jdbcType="VARCHAR" />
+    <result column="a_pass" property="aPass" jdbcType="VARCHAR" />
+  </resultMap>
+
+<select id="login" resultMap="BaseResultMap">
+  select a_id, a_name, a_pass from admin
+                              where a_name = #{name} and a_pass = #{pwd}
+</select>
+
+
+</mapper>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.bjpowernode.mapper.ProductInfoMapper" >
+
+  <resultMap id="BaseResultMap" type="com.bjpowernode.pojo.ProductInfo" >
+    <id column="p_id" property="pId" jdbcType="INTEGER" />
+    <result column="p_name" property="pName" jdbcType="VARCHAR" />
+    <result column="p_content" property="pContent" jdbcType="VARCHAR" />
+    <result column="p_price" property="pPrice" jdbcType="INTEGER" />
+    <result column="p_image" property="pImage" jdbcType="VARCHAR" />
+    <result column="p_number" property="pNumber" jdbcType="INTEGER" />
+    <result column="type_id" property="typeId" jdbcType="INTEGER" />
+    <result column="p_date" property="pDate" jdbcType="DATE" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    p_id, p_name, p_content, p_price, p_image, p_number, type_id, p_date
+  </sql>
+<!--  查询所有商品-->
+<select id="getAll" resultMap="BaseResultMap">
+  select <include refid="Base_Column_List"></include>
+      from product_info order by p_id desc
+</select>
+<!--  添加商品-->
+  <insert id="add" parameterType="com.bjpowernode.pojo.ProductInfo">
+    insert into product_info (p_name, p_content, p_price, p_image, p_number, type_id, p_date)
+        values (#{pName},#{pContent},#{pPrice},#{pImage}, #{pNumber},#{typeId},#{pDate})
+  </insert>
+<!--  根据pid查询-->
+  <select id="selectByPid" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include> from product_info
+        where p_id = #{pid}
+  </select>
+<!--  根据pid修改/*set p_name=#{pName}, p_content=#{pContent}, p_price=#{pPrice},
+                            p_image=#{pImage}, p_number=#{pNumber},
+                            type_id=#{typeId}, p_date=#{pDate}*/-->
+  <update id="update" parameterType="com.bjpowernode.pojo.ProductInfo" >
+    update product_info
+      <set>
+           <if test="pName != null" >
+               p_name = #{pName,jdbcType=VARCHAR},
+           </if>
+           <if test="pContent != null" >
+               p_content = #{pContent,jdbcType=VARCHAR},
+           </if>
+           <if test="pPrice != null" >
+               p_price = #{pPrice,jdbcType=INTEGER},
+           </if>
+           <if test="pImage != null" >
+               p_image = #{pImage,jdbcType=VARCHAR},
+           </if>
+           <if test="pNumber != null" >
+               p_number = #{pNumber,jdbcType=INTEGER},
+           </if>
+           <if test="typeId != null" >
+               type_id = #{typeId,jdbcType=INTEGER},
+           </if>
+           <if test="pDate != null" >
+               p_date = #{pDate,jdbcType=DATE},
+           </if>
+       </set>
+                where p_id = #{pId}
+  </update>
+<!--    单个删除-->
+    <delete id="delete" >
+        delete from product_info where p_id = #{pid}
+    </delete>
+<!--    批量删除-->
+    <delete id="deleteByIds">
+        delete from product_info where p_id in
+                <foreach collection="array" open="(" close=")" separator="," item="pid">
+                    #{pid}
+                </foreach>
+    </delete>
+<!--    多条件查询-->
+    <select id="splitCondition" parameterType="com.bjpowernode.pojo.vo.ProductVo" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from product_info
+            <where>
+                <if test=" pname != '' and pname != null  ">
+                  and p_name like "%" #{pname} "%"
+                </if>
+                <if test="typeid != null and typeid != -1">
+                    and type_id = #{typeid}
+                </if>
+                <if test="(lprice != null and lprice != '')and(hprice == null or hprice == '') ">
+                    and p_price &gt;= #{lprice}
+                </if>
+                <if test="(lprice == null or lprice == '')and(hprice != null and hprice != '') ">
+                    and p_price &lt;= #{hprice}
+                </if>
+                <if test="(lprice != null and lprice != '')and(hprice != null and hprice != '') ">
+                    and p_price between #{lprice} and #{hprice}
+                </if>
+            </where>
+    </select>
+
+</mapper>
