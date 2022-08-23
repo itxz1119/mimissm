@@ -9,13 +9,4 @@ public interface AdminMapper {
 
     Admin login(@Param("name") String name, @Param("pwd") String pwd);
 
-    //Admin login(@Param("name") String name, @Param("pwd") String pwd);
-    Admin login2(@Param("name") String name, @Param("pwd") String pwd);
-    /*
-    *
-    * master....
-    * */
-
-
-
 }
